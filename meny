@@ -1,0 +1,36 @@
+local Players = game:GetService("Players")
+-- Function to kill a player
+local function killPlayer(targetName)
+    local targetPlayer = Players:FindFirstChild(targetName)
+    if targetPlayer and targetPlayer.Character then
+        local humanoid = targetPlayer.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.Health = 0 -- This kills the player
+        end
+    else
+        warn("Player not found or character not loaded.")
+    end
+end
+
+-- Function to process chat commands
+local function onPlayerChatted(player, message)
+    -- Check if the message starts with !kill
+    if message:sub(1, 5) == "!kill" then
+        -- Get the player's name (splitting the message by space)
+        local args = message:split(" ")
+        local targetName = args[2] -- The second part should be the player's name
+        if targetName then
+            killPlayer(targetName)
+        else
+            player:Kick("Invalid command usage. Please specify a player to kill!")
+        end
+    end
+end
+
+-- Connect the Chatted event to the function for each player that joins
+Players.PlayerAdded:Connect(function(player)
+    player.Chatted:Connect(function(message)
+        onPlayerChatted(player, message)
+    end)
+end)
+print("Sigma")
